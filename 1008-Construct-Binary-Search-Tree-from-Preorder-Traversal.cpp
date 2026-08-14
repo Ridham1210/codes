@@ -11,23 +11,16 @@
  */
 class Solution {
 public:
-    void frompreorder(int va, TreeNode* root){
-        TreeNode* prev;
-        TreeNode* newnode = new TreeNode(va);
-        while(root){
-        prev = root;
-        if(va < root->val) root = root->left;
-        else if(va > root->val) root = root->right;
-        }
-        if(prev->val > va) prev->left = newnode;
-        else prev->right = newnode;
+    TreeNode* frompreorder(vector<int>& preorder, int& idx, int bound){
+        if(idx == preorder.size() || preorder[idx] > bound) return nullptr;
+        int va = preorder[idx++];
+        TreeNode* root = new TreeNode(va);
+        root->left = frompreorder(preorder, idx, root->val);
+        root->right = frompreorder(preorder, idx, bound);
+        return root;
     }
     TreeNode* bstFromPreorder(vector<int>& preorder) {
-        if(preorder.size() == 0) return nullptr;
-        TreeNode* root = new TreeNode(preorder[0]);
-        for(int i=1; i<preorder.size(); i++){
-            frompreorder(preorder[i], root);
-        }
-        return root;
+        int idx = 0;
+        return frompreorder(preorder, idx, INT_MAX);
     }
 };
